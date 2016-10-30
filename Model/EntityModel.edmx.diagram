@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bdac27057ffa4607a1ba40da7bd4f526" Name="Diagram1" >
+        <EntityTypeShape EntityType="EntityModel.User" Width="1.5" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="EntityModel.Reviewer" Width="1.5" PointX="0.5" PointY="4.125" />
+        <InheritanceConnector EntityType="EntityModel.Reviewer" />
+        <EntityTypeShape EntityType="EntityModel.Tag" Width="1.5" PointX="5.125" PointY="8.125" />
+        <EntityTypeShape EntityType="EntityModel.LocalStore" Width="1.5" PointX="5.125" PointY="4.625" />
+        <EntityTypeShape EntityType="EntityModel.Country" Width="1.5" PointX="2.375" PointY="0.5" />
+        <EntityTypeShape EntityType="EntityModel.Address" Width="1.5" PointX="2.875" PointY="4.625" />
+        <AssociationConnector Association="EntityModel.AddressLocalStore" />
+        <EntityTypeShape EntityType="EntityModel.Review" Width="1.5" PointX="7.875" PointY="4.625" />
+        <EntityTypeShape EntityType="EntityModel.ScoreBand" Width="1.5" PointX="7.875" PointY="8.875" />
+        <AssociationConnector Association="EntityModel.ScoreBandReview" />
+        <AssociationConnector Association="EntityModel.ReviewerReview" />
+        <AssociationConnector Association="EntityModel.LocalStoreReview" />
+        <EntityTypeShape EntityType="EntityModel.City" Width="1.5" PointX="5.625" PointY="1.375" />
+        <AssociationConnector Association="EntityModel.CountryCity" />
+        <AssociationConnector Association="EntityModel.CityAddress" />
+        <AssociationConnector Association="EntityModel.CountryReviewer" />
+        <EntityTypeShape EntityType="EntityModel.Category" Width="1.5" PointX="1" PointY="8.125" />
+        <AssociationConnector Association="EntityModel.LocalStoreTag" />
+        <AssociationConnector Association="EntityModel.CityReview" />
+        <AssociationConnector Association="EntityModel.CountryReview" />
+        <AssociationConnector Association="EntityModel.CategoryCategory" />
+        <AssociationConnector Association="EntityModel.CategoryTag" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
