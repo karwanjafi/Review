@@ -8,28 +8,24 @@
   <EntityContainer Name="EntityModelStoreContainer">
     <EntitySet Name="Users" EntityType="EntityModel.Store.Users" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Tags" EntityType="EntityModel.Store.Tags" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="LocalStores" EntityType="EntityModel.Store.LocalStores" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Businesses" EntityType="EntityModel.Store.Businesses" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Countries" EntityType="EntityModel.Store.Countries" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Reviews" EntityType="EntityModel.Store.Reviews" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ScoreBands" EntityType="EntityModel.Store.ScoreBands" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Addresses" EntityType="EntityModel.Store.Addresses" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Cities" EntityType="EntityModel.Store.Cities" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Categories" EntityType="EntityModel.Store.Categories" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Logins" EntityType="EntityModel.Store.Logins" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Users_Reviewer" EntityType="EntityModel.Store.Users_Reviewer" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="AddressLocalStore" Association="EntityModel.Store.AddressLocalStore">
-      <End Role="Address" EntitySet="Addresses" />
-      <End Role="LocalStore" EntitySet="LocalStores" />
-    </AssociationSet>
+    <EntitySet Name="Users_Owner" EntityType="EntityModel.Store.Users_Owner" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Users_Admin" EntityType="EntityModel.Store.Users_Admin" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BusinessOwner" EntityType="EntityModel.Store.BusinessOwner" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="ScoreBandReview" Association="EntityModel.Store.ScoreBandReview">
       <End Role="ScoreBand" EntitySet="ScoreBands" />
       <End Role="Review" EntitySet="Reviews" />
     </AssociationSet>
     <AssociationSet Name="ReviewerReview" Association="EntityModel.Store.ReviewerReview">
       <End Role="Reviewer" EntitySet="Users_Reviewer" />
-      <End Role="Review" EntitySet="Reviews" />
-    </AssociationSet>
-    <AssociationSet Name="LocalStoreReview" Association="EntityModel.Store.LocalStoreReview">
-      <End Role="LocalStore" EntitySet="LocalStores" />
       <End Role="Review" EntitySet="Reviews" />
     </AssociationSet>
     <AssociationSet Name="CountryCity" Association="EntityModel.Store.CountryCity">
@@ -43,10 +39,6 @@
     <AssociationSet Name="CountryReviewer" Association="EntityModel.Store.CountryReviewer">
       <End Role="Country" EntitySet="Countries" />
       <End Role="Reviewer" EntitySet="Users_Reviewer" />
-    </AssociationSet>
-    <AssociationSet Name="LocalStoreTag" Association="EntityModel.Store.LocalStoreTag">
-      <End Role="LocalStore" EntitySet="LocalStores" />
-      <End Role="Tag" EntitySet="Tags" />
     </AssociationSet>
     <AssociationSet Name="CityReview" Association="EntityModel.Store.CityReview">
       <End Role="City" EntitySet="Cities" />
@@ -64,9 +56,45 @@
       <End Role="Category" EntitySet="Categories" />
       <End Role="Tag" EntitySet="Tags" />
     </AssociationSet>
+    <AssociationSet Name="LoginUser" Association="EntityModel.Store.LoginUser">
+      <End Role="Login" EntitySet="Logins" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="BusinessAddress" Association="EntityModel.Store.BusinessAddress">
+      <End Role="Business" EntitySet="Businesses" />
+      <End Role="Address" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="BusinessTag" Association="EntityModel.Store.BusinessTag">
+      <End Role="Business" EntitySet="Businesses" />
+      <End Role="Tag" EntitySet="Tags" />
+    </AssociationSet>
+    <AssociationSet Name="BusinessReview" Association="EntityModel.Store.BusinessReview">
+      <End Role="Business" EntitySet="Businesses" />
+      <End Role="Review" EntitySet="Reviews" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BusinessOwner_Business" Association="EntityModel.Store.FK_BusinessOwner_Business">
+      <End Role="Business" EntitySet="Businesses" />
+      <End Role="BusinessOwner" EntitySet="BusinessOwner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BusinessOwner_Owner" Association="EntityModel.Store.FK_BusinessOwner_Owner">
+      <End Role="Owner" EntitySet="Users_Owner" />
+      <End Role="BusinessOwner" EntitySet="BusinessOwner" />
+    </AssociationSet>
+    <AssociationSet Name="ReviewTag" Association="EntityModel.Store.ReviewTag">
+      <End Role="Review" EntitySet="Reviews" />
+      <End Role="Tag" EntitySet="Tags" />
+    </AssociationSet>
     <AssociationSet Name="FK_Reviewer_inherits_User" Association="EntityModel.Store.FK_Reviewer_inherits_User">
       <End Role="User" EntitySet="Users" />
       <End Role="Reviewer" EntitySet="Users_Reviewer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Owner_inherits_User" Association="EntityModel.Store.FK_Owner_inherits_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Owner" EntitySet="Users_Owner" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Admin_inherits_User" Association="EntityModel.Store.FK_Admin_inherits_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Admin" EntitySet="Users_Admin" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Users">
@@ -83,6 +111,8 @@
     <Property Name="ActivationType" Type="tinyint" Nullable="false" />
     <Property Name="ActivationDateTime" Type="datetime" Nullable="true" />
     <Property Name="Status" Type="smallint" Nullable="false" />
+    <Property Name="Salt" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Login_Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="Tags">
     <Key>
@@ -90,10 +120,12 @@
     </Key>
     <Property Name="Id" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TagName" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="LocalStore_Id" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="Searchable" Type="bit" Nullable="false" />
     <Property Name="Category_Id" Type="int" Nullable="true" />
+    <Property Name="Business_Id" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="Review_Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
-  <EntityType Name="LocalStores">
+  <EntityType Name="Businesses">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -104,7 +136,6 @@
     <Property Name="Bio" Type="nvarchar(max)" Nullable="false" />
     <Property Name="AverageScore" Type="smallint" Nullable="false" />
     <Property Name="LastCalculationDateTime" Type="datetime" Nullable="true" />
-    <Property Name="Address_Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="Countries">
     <Key>
@@ -113,6 +144,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="100" />
     <Property Name="Status" Type="smallint" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="5" />
   </EntityType>
   <EntityType Name="Reviews">
     <Key>
@@ -125,11 +157,14 @@
     <Property Name="SubmitLatitude" Type="nvarchar(max)" Nullable="false" />
     <Property Name="SubmitLongitude" Type="nvarchar(max)" Nullable="false" />
     <Property Name="IsConfirm" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="IsAnonymous" Type="bit" Nullable="false" />
+    <Property Name="ToBlackList" Type="bit" Nullable="false" />
     <Property Name="ScoreBand_Id" Type="smallint" Nullable="false" />
     <Property Name="Reviewer_Id" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="LocalStore_Id" Type="uniqueidentifier" Nullable="true" />
     <Property Name="City_Id" Type="int" Nullable="true" />
-    <Property Name="Country_Id" Type="int" Nullable="true" />
+    <Property Name="Location_Id" Type="int" Nullable="true" />
+    <Property Name="Business_Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="ScoreBands">
     <Key>
@@ -152,6 +187,7 @@
     <Property Name="FaxNo" Type="nvarchar" Nullable="false" MaxLength="20" />
     <Property Name="Location" Type="geography" Nullable="false" SRID="4326" />
     <Property Name="City_Id" Type="int" Nullable="false" />
+    <Property Name="Business_Id" Type="uniqueidentifier" Nullable="true" />
   </EntityType>
   <EntityType Name="Cities">
     <Key>
@@ -160,6 +196,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="100" />
     <Property Name="Status" Type="smallint" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="10" />
     <Property Name="Country_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Categories">
@@ -169,7 +206,19 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Status" Type="smallint" Nullable="false" />
+    <Property Name="Bio" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Logo" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Parent_Id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Logins">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="LoginDateTime" Type="datetime" Nullable="false" />
+    <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TokenIp" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="LoginDevice" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="Users_Reviewer">
     <Key>
@@ -177,21 +226,34 @@
     </Key>
     <Property Name="RegisterationSource" Type="tinyint" Nullable="false" />
     <Property Name="LastCommentDateTime" Type="datetime" Nullable="true" />
+    <Property Name="Gender" Type="smallint" Nullable="false" />
+    <Property Name="Bio" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="BirthDay" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Interest" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="EducationDegree" Type="smallint" Nullable="false" />
     <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Country_Id" Type="int" Nullable="false" />
+    <Property Name="Country_Id" Type="int" Nullable="true" />
   </EntityType>
-  <Association Name="AddressLocalStore">
-    <End Role="Address" Type="EntityModel.Store.Addresses" Multiplicity="1" />
-    <End Role="LocalStore" Type="EntityModel.Store.LocalStores" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Address">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="LocalStore">
-        <PropertyRef Name="Address_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
+  <EntityType Name="Users_Owner">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users_Admin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BusinessOwner">
+    <Key>
+      <PropertyRef Name="Business_Id" />
+      <PropertyRef Name="Owners_Id" />
+    </Key>
+    <Property Name="Business_Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Owners_Id" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
   <Association Name="ScoreBandReview">
     <End Role="ScoreBand" Type="EntityModel.Store.ScoreBands" Multiplicity="1" />
     <End Role="Review" Type="EntityModel.Store.Reviews" Multiplicity="*" />
@@ -213,18 +275,6 @@
       </Principal>
       <Dependent Role="Review">
         <PropertyRef Name="Reviewer_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="LocalStoreReview">
-    <End Role="LocalStore" Type="EntityModel.Store.LocalStores" Multiplicity="0..1" />
-    <End Role="Review" Type="EntityModel.Store.Reviews" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="LocalStore">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Review">
-        <PropertyRef Name="LocalStore_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -253,7 +303,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CountryReviewer">
-    <End Role="Country" Type="EntityModel.Store.Countries" Multiplicity="1" />
+    <End Role="Country" Type="EntityModel.Store.Countries" Multiplicity="0..1" />
     <End Role="Reviewer" Type="EntityModel.Store.Users_Reviewer" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Country">
@@ -261,18 +311,6 @@
       </Principal>
       <Dependent Role="Reviewer">
         <PropertyRef Name="Country_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="LocalStoreTag">
-    <End Role="LocalStore" Type="EntityModel.Store.LocalStores" Multiplicity="0..1" />
-    <End Role="Tag" Type="EntityModel.Store.Tags" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="LocalStore">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Tag">
-        <PropertyRef Name="LocalStore_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -296,7 +334,7 @@
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Review">
-        <PropertyRef Name="Country_Id" />
+        <PropertyRef Name="Location_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -324,6 +362,90 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="LoginUser">
+    <End Role="Login" Type="EntityModel.Store.Logins" Multiplicity="1" />
+    <End Role="User" Type="EntityModel.Store.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Login">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Login_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="BusinessAddress">
+    <End Role="Business" Type="EntityModel.Store.Businesses" Multiplicity="0..1" />
+    <End Role="Address" Type="EntityModel.Store.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Business">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Address">
+        <PropertyRef Name="Business_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="BusinessTag">
+    <End Role="Business" Type="EntityModel.Store.Businesses" Multiplicity="0..1" />
+    <End Role="Tag" Type="EntityModel.Store.Tags" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Business">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tag">
+        <PropertyRef Name="Business_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="BusinessReview">
+    <End Role="Business" Type="EntityModel.Store.Businesses" Multiplicity="1" />
+    <End Role="Review" Type="EntityModel.Store.Reviews" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Business">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Review">
+        <PropertyRef Name="Business_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ReviewTag">
+    <End Role="Review" Type="EntityModel.Store.Reviews" Multiplicity="1" />
+    <End Role="Tag" Type="EntityModel.Store.Tags" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Review">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tag">
+        <PropertyRef Name="Review_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BusinessOwner_Business">
+    <End Role="Business" Type="EntityModel.Store.Businesses" Multiplicity="1" />
+    <End Role="BusinessOwner" Type="EntityModel.Store.BusinessOwner" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Business">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BusinessOwner">
+        <PropertyRef Name="Business_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BusinessOwner_Owner">
+    <End Role="BusinessOwner" Type="EntityModel.Store.BusinessOwner" Multiplicity="*" />
+    <End Role="Owner" Type="EntityModel.Store.Users_Owner" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Owner">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BusinessOwner">
+        <PropertyRef Name="Owners_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Reviewer_inherits_User">
     <End Role="User" Type="EntityModel.Store.Users" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -338,6 +460,34 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Owner_inherits_User">
+    <End Role="User" Type="EntityModel.Store.Users" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Owner" Type="EntityModel.Store.Users_Owner" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Owner">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Admin_inherits_User">
+    <End Role="User" Type="EntityModel.Store.Users" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Admin" Type="EntityModel.Store.Users_Admin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Admin">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -345,12 +495,8 @@
         <EntityContainer Name="EntityModelContainer" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Users" EntityType="EntityModel.User" />
           <EntitySet Name="Tags" EntityType="EntityModel.Tag" />
-          <EntitySet Name="LocalStores" EntityType="EntityModel.LocalStore" />
+          <EntitySet Name="Businesses" EntityType="EntityModel.Business" />
           <EntitySet Name="Countries" EntityType="EntityModel.Country" />
-          <AssociationSet Name="AddressLocalStore" Association="EntityModel.AddressLocalStore">
-            <End Role="Address" EntitySet="Addresses" />
-            <End Role="LocalStore" EntitySet="LocalStores" />
-          </AssociationSet>
           <EntitySet Name="Reviews" EntityType="EntityModel.Review" />
           <EntitySet Name="ScoreBands" EntityType="EntityModel.ScoreBand" />
           <AssociationSet Name="ScoreBandReview" Association="EntityModel.ScoreBandReview">
@@ -359,10 +505,6 @@
           </AssociationSet>
           <AssociationSet Name="ReviewerReview" Association="EntityModel.ReviewerReview">
             <End Role="Reviewer" EntitySet="Users" />
-            <End Role="Review" EntitySet="Reviews" />
-          </AssociationSet>
-          <AssociationSet Name="LocalStoreReview" Association="EntityModel.LocalStoreReview">
-            <End Role="LocalStore" EntitySet="LocalStores" />
             <End Role="Review" EntitySet="Reviews" />
           </AssociationSet>
           <EntitySet Name="Addresses" EntityType="EntityModel.Address" />
@@ -380,10 +522,6 @@
             <End Role="Reviewer" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="Categories" EntityType="EntityModel.Category" />
-          <AssociationSet Name="LocalStoreTag" Association="EntityModel.LocalStoreTag">
-            <End Role="LocalStore" EntitySet="LocalStores" />
-            <End Role="Tag" EntitySet="Tags" />
-          </AssociationSet>
           <AssociationSet Name="CityReview" Association="EntityModel.CityReview">
             <End Role="City" EntitySet="Cities" />
             <End Role="Review" EntitySet="Reviews" />
@@ -398,6 +536,31 @@
           </AssociationSet>
           <AssociationSet Name="CategoryTag" Association="EntityModel.CategoryTag">
             <End Role="Category" EntitySet="Categories" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <EntitySet Name="Logins" EntityType="EntityModel.Login" />
+          <AssociationSet Name="LoginUser" Association="EntityModel.LoginUser">
+            <End Role="Login" EntitySet="Logins" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="BusinessAddress" Association="EntityModel.BusinessAddress">
+            <End Role="Business" EntitySet="Businesses" />
+            <End Role="Address" EntitySet="Addresses" />
+          </AssociationSet>
+          <AssociationSet Name="BusinessTag" Association="EntityModel.BusinessTag">
+            <End Role="Business" EntitySet="Businesses" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="BusinessReview" Association="EntityModel.BusinessReview">
+            <End Role="Business" EntitySet="Businesses" />
+            <End Role="Review" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="BusinessOwner" Association="EntityModel.BusinessOwner">
+            <End Role="Business" EntitySet="Businesses" />
+            <End Role="Owner" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ReviewTag" Association="EntityModel.ReviewTag">
+            <End Role="Review" EntitySet="Reviews" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
         </EntityContainer>
@@ -415,12 +578,19 @@
           <Property Name="ActivationType" Type="Byte" Nullable="false" />
           <Property Name="ActivationDateTime" Type="DateTime" Nullable="true" />
           <Property Name="Status" Type="Int16" Nullable="false" />
-        </EntityType>
+          <NavigationProperty Name="Login" Relationship="EntityModel.LoginUser" FromRole="User" ToRole="Login" />
+          <Property Name="Salt" Type="String" Nullable="false" />
+          </EntityType>
         <EntityType Name="Reviewer" BaseType="EntityModel.User">
           <Property Name="RegisterationSource" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Reviews" Relationship="EntityModel.ReviewerReview" FromRole="Reviewer" ToRole="Review" />
           <NavigationProperty Name="Country" Relationship="EntityModel.CountryReviewer" FromRole="Reviewer" ToRole="Country" />
           <Property Name="LastCommentDateTime" Type="DateTime" Nullable="true" />
+          <Property Name="Gender" Type="Int16" Nullable="false" />
+          <Property Name="Bio" Type="String" Nullable="false" />
+          <Property Name="BirthDay" Type="String" Nullable="false" />
+          <Property Name="Interest" Type="String" Nullable="false" />
+          <Property Name="EducationDegree" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -428,23 +598,26 @@
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TagName" Type="String" Nullable="false" MaxLength="5000" />
-          <NavigationProperty Name="LocalStore" Relationship="EntityModel.LocalStoreTag" FromRole="Tag" ToRole="LocalStore" />
           <NavigationProperty Name="Category" Relationship="EntityModel.CategoryTag" FromRole="Tag" ToRole="Category" />
+          <Property Name="Searchable" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Business" Relationship="EntityModel.BusinessTag" FromRole="Tag" ToRole="Business" />
+          <NavigationProperty Name="Review" Relationship="EntityModel.ReviewTag" FromRole="Tag" ToRole="Review" />
         </EntityType>
-        <EntityType Name="LocalStore">
+        <EntityType Name="Business">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <NavigationProperty Name="Address" Relationship="EntityModel.AddressLocalStore" FromRole="LocalStore" ToRole="Address" />
-          <NavigationProperty Name="Reviews" Relationship="EntityModel.LocalStoreReview" FromRole="LocalStore" ToRole="Review" />
           <Property Name="Category" Type="String" Nullable="false" />
           <Property Name="Logo" Type="String" Nullable="false" />
           <Property Name="Bio" Type="String" Nullable="false" />
-          <NavigationProperty Name="Tag" Relationship="EntityModel.LocalStoreTag" FromRole="LocalStore" ToRole="Tag" />
           <Property Name="AverageScore" Type="Int16" Nullable="false" />
           <Property Name="LastCalculationDateTime" Type="DateTime" Nullable="true" />
+          <NavigationProperty Name="Addresses" Relationship="EntityModel.BusinessAddress" FromRole="Business" ToRole="Address" />
+          <NavigationProperty Name="Tags" Relationship="EntityModel.BusinessTag" FromRole="Business" ToRole="Tag" />
+          <NavigationProperty Name="Reviews" Relationship="EntityModel.BusinessReview" FromRole="Business" ToRole="Review" />
+          <NavigationProperty Name="Owners" Relationship="EntityModel.BusinessOwner" FromRole="Business" ToRole="Owner" />
         </EntityType>
         <EntityType Name="Country">
           <Key>
@@ -456,6 +629,7 @@
           <NavigationProperty Name="Reviewers" Relationship="EntityModel.CountryReviewer" FromRole="Country" ToRole="Reviewer" />
           <Property Name="Status" Type="Int16" Nullable="false" />
           <NavigationProperty Name="Reviews" Relationship="EntityModel.CountryReview" FromRole="Country" ToRole="Review" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="5" />
         </EntityType>
         <EntityType Name="Address">
           <Key>
@@ -467,14 +641,10 @@
           <Property Name="PostCode" Type="String" Nullable="false" MaxLength="20" />
           <Property Name="TelNo" Type="String" Nullable="false" MaxLength="20" />
           <Property Name="FaxNo" Type="String" Nullable="false" MaxLength="20" />
-          <NavigationProperty Name="LocalStores" Relationship="EntityModel.AddressLocalStore" FromRole="Address" ToRole="LocalStore" />
           <Property Name="Location" Type="Geography" Nullable="false" />
           <NavigationProperty Name="City" Relationship="EntityModel.CityAddress" FromRole="Address" ToRole="City" />
+          <NavigationProperty Name="Business" Relationship="EntityModel.BusinessAddress" FromRole="Address" ToRole="Business" />
         </EntityType>
-        <Association Name="AddressLocalStore">
-          <End Type="EntityModel.Address" Role="Address" Multiplicity="1" />
-          <End Type="EntityModel.LocalStore" Role="LocalStore" Multiplicity="*" />
-        </Association>
         <EntityType Name="Review">
           <Key>
             <PropertyRef Name="Id" />
@@ -482,7 +652,6 @@
           <Property Name="Id" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="ScoreBand" Relationship="EntityModel.ScoreBandReview" FromRole="Review" ToRole="ScoreBand" />
           <NavigationProperty Name="Reviewer" Relationship="EntityModel.ReviewerReview" FromRole="Review" ToRole="Reviewer" />
-          <NavigationProperty Name="LocalStore" Relationship="EntityModel.LocalStoreReview" FromRole="Review" ToRole="LocalStore" />
           <Property Name="Comment" Type="String" Nullable="false" />
           <Property Name="SubmitDateTime" Type="String" Nullable="false" />
           <Property Name="SubmitIP" Type="String" Nullable="false" />
@@ -490,7 +659,12 @@
           <Property Name="SubmitLongitude" Type="String" Nullable="false" />
           <Property Name="IsConfirm" Type="String" Nullable="false" />
           <NavigationProperty Name="City" Relationship="EntityModel.CityReview" FromRole="Review" ToRole="City" />
-          <NavigationProperty Name="Country" Relationship="EntityModel.CountryReview" FromRole="Review" ToRole="Country" />
+          <NavigationProperty Name="Location" Relationship="EntityModel.CountryReview" FromRole="Review" ToRole="Country" />
+          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="IsAnonymous" Type="Boolean" Nullable="false" />
+          <Property Name="ToBlackList" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Business" Relationship="EntityModel.BusinessReview" FromRole="Review" ToRole="Business" />
+          <NavigationProperty Name="Tags" Relationship="EntityModel.ReviewTag" FromRole="Review" ToRole="Tag" />
         </EntityType>
         <EntityType Name="ScoreBand">
           <Key>
@@ -510,10 +684,6 @@
           <End Type="EntityModel.Reviewer" Role="Reviewer" Multiplicity="1" />
           <End Type="EntityModel.Review" Role="Review" Multiplicity="*" />
         </Association>
-        <Association Name="LocalStoreReview">
-          <End Type="EntityModel.LocalStore" Role="LocalStore" Multiplicity="0..1" />
-          <End Type="EntityModel.Review" Role="Review" Multiplicity="*" />
-        </Association>
         <EntityType Name="City">
           <Key>
             <PropertyRef Name="Id" />
@@ -524,6 +694,7 @@
           <NavigationProperty Name="Addresses" Relationship="EntityModel.CityAddress" FromRole="City" ToRole="Address" />
           <Property Name="Status" Type="Int16" Nullable="false" />
           <NavigationProperty Name="Reviews" Relationship="EntityModel.CityReview" FromRole="City" ToRole="Review" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="10" />
         </EntityType>
         <Association Name="CountryCity">
           <End Type="EntityModel.Country" Role="Country" Multiplicity="1" />
@@ -534,7 +705,7 @@
           <End Type="EntityModel.Address" Role="Address" Multiplicity="*" />
         </Association>
         <Association Name="CountryReviewer">
-          <End Type="EntityModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="EntityModel.Country" Role="Country" Multiplicity="0..1" />
           <End Type="EntityModel.Reviewer" Role="Reviewer" Multiplicity="*" />
         </Association>
         <EntityType Name="Category">
@@ -547,11 +718,9 @@
           <NavigationProperty Name="Parent" Relationship="EntityModel.CategoryCategory" FromRole="Category1" ToRole="Category" />
           <NavigationProperty Name="Tags" Relationship="EntityModel.CategoryTag" FromRole="Category" ToRole="Tag" />
           <Property Name="Status" Type="Int16" Nullable="false" />
+          <Property Name="Bio" Type="String" Nullable="false" />
+          <Property Name="Logo" Type="String" Nullable="false" />
         </EntityType>
-        <Association Name="LocalStoreTag">
-          <End Type="EntityModel.LocalStore" Role="LocalStore" Multiplicity="0..1" />
-          <End Type="EntityModel.Tag" Role="Tag" Multiplicity="0..1" />
-        </Association>
         <Association Name="CityReview">
           <End Type="EntityModel.City" Role="City" Multiplicity="0..1" />
           <End Type="EntityModel.Review" Role="Review" Multiplicity="*" />
@@ -566,6 +735,46 @@
         </Association>
         <Association Name="CategoryTag">
           <End Type="EntityModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="EntityModel.Tag" Role="Tag" Multiplicity="0..1" />
+        </Association>
+        <EntityType Name="Admin" BaseType="EntityModel.User">
+        </EntityType>
+        <EntityType Name="Owner" BaseType="EntityModel.User">
+          <NavigationProperty Name="Business" Relationship="EntityModel.BusinessOwner" FromRole="Owner" ToRole="Business" />
+        </EntityType>
+        <EntityType Name="Login">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <NavigationProperty Name="Users" Relationship="EntityModel.LoginUser" FromRole="Login" ToRole="User" />
+          <Property Name="LoginDateTime" Type="DateTime" Nullable="false" />
+          <Property Name="Token" Type="String" Nullable="false" />
+          <Property Name="TokenIp" Type="String" Nullable="false" />
+          <Property Name="LoginDevice" Type="String" Nullable="false" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+        </EntityType>
+        <Association Name="LoginUser">
+          <End Type="EntityModel.Login" Role="Login" Multiplicity="1" />
+          <End Type="EntityModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        <Association Name="BusinessAddress">
+          <End Type="EntityModel.Business" Role="Business" Multiplicity="0..1" />
+          <End Type="EntityModel.Address" Role="Address" Multiplicity="0..1" />
+        </Association>
+        <Association Name="BusinessTag">
+          <End Type="EntityModel.Business" Role="Business" Multiplicity="0..1" />
+          <End Type="EntityModel.Tag" Role="Tag" Multiplicity="0..1" />
+        </Association>
+        <Association Name="BusinessReview">
+          <End Type="EntityModel.Business" Role="Business" Multiplicity="1" />
+          <End Type="EntityModel.Review" Role="Review" Multiplicity="*" />
+        </Association>
+        <Association Name="BusinessOwner">
+          <End Type="EntityModel.Business" Role="Business" Multiplicity="*" />
+          <End Type="EntityModel.Owner" Role="Owner" Multiplicity="*" />
+        </Association>
+        <Association Name="ReviewTag">
+          <End Type="EntityModel.Review" Role="Review" Multiplicity="1" />
           <End Type="EntityModel.Tag" Role="Tag" Multiplicity="0..1" />
         </Association>
       </Schema>
@@ -587,6 +796,7 @@
           <ScalarProperty Name="ActivationType" ColumnName="ActivationType" />
           <ScalarProperty Name="ActivationDateTime" ColumnName="ActivationDateTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Salt" ColumnName="Salt" />
         </MappingFragment>
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Reviewer)">
@@ -594,6 +804,21 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="RegisterationSource" ColumnName="RegisterationSource" />
           <ScalarProperty Name="LastCommentDateTime" ColumnName="LastCommentDateTime" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="Bio" ColumnName="Bio" />
+          <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+          <ScalarProperty Name="Interest" ColumnName="Interest" />
+          <ScalarProperty Name="EducationDegree" ColumnName="EducationDegree" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Owner)">
+        <MappingFragment StoreEntitySet="Users_Owner">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Admin)">
+        <MappingFragment StoreEntitySet="Users_Admin">
+          <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -602,12 +827,13 @@
         <MappingFragment StoreEntitySet="Tags">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="TagName" ColumnName="TagName" />
+          <ScalarProperty Name="Searchable" ColumnName="Searchable" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="LocalStores">
-      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.LocalStore)">
-        <MappingFragment StoreEntitySet="LocalStores">
+    <EntitySetMapping Name="Businesses">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Business)">
+        <MappingFragment StoreEntitySet="Businesses">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Category" ColumnName="Category" />
@@ -624,6 +850,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -637,6 +864,9 @@
           <ScalarProperty Name="SubmitLatitude" ColumnName="SubmitLatitude" />
           <ScalarProperty Name="SubmitLongitude" ColumnName="SubmitLongitude" />
           <ScalarProperty Name="IsConfirm" ColumnName="IsConfirm" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="IsAnonymous" ColumnName="IsAnonymous" />
+          <ScalarProperty Name="ToBlackList" ColumnName="ToBlackList" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -669,6 +899,7 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -678,17 +909,22 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Bio" ColumnName="Bio" />
+          <ScalarProperty Name="Logo" ColumnName="Logo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="AddressLocalStore" TypeName="EntityModel.AddressLocalStore" StoreEntitySet="LocalStores">
-      <EndProperty Name="Address">
-        <ScalarProperty Name="Id" ColumnName="Address_Id" />
-      </EndProperty>
-      <EndProperty Name="LocalStore">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
+    <EntitySetMapping Name="Logins">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Login)">
+        <MappingFragment StoreEntitySet="Logins">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="LoginDateTime" ColumnName="LoginDateTime" />
+          <ScalarProperty Name="Token" ColumnName="Token" />
+          <ScalarProperty Name="TokenIp" ColumnName="TokenIp" />
+          <ScalarProperty Name="LoginDevice" ColumnName="LoginDevice" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <AssociationSetMapping Name="ScoreBandReview" TypeName="EntityModel.ScoreBandReview" StoreEntitySet="Reviews">
       <EndProperty Name="ScoreBand">
         <ScalarProperty Name="Id" ColumnName="ScoreBand_Id" />
@@ -704,15 +940,6 @@
       <EndProperty Name="Review">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="LocalStoreReview" TypeName="EntityModel.LocalStoreReview" StoreEntitySet="Reviews">
-      <EndProperty Name="LocalStore">
-        <ScalarProperty Name="Id" ColumnName="LocalStore_Id" />
-      </EndProperty>
-      <EndProperty Name="Review">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-      <Condition ColumnName="LocalStore_Id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="CountryCity" TypeName="EntityModel.CountryCity" StoreEntitySet="Cities">
       <EndProperty Name="Country">
@@ -737,15 +964,7 @@
       <EndProperty Name="Reviewer">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="LocalStoreTag" TypeName="EntityModel.LocalStoreTag" StoreEntitySet="Tags">
-      <EndProperty Name="LocalStore">
-        <ScalarProperty Name="Id" ColumnName="LocalStore_Id" />
-      </EndProperty>
-      <EndProperty Name="Tag">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-      <Condition ColumnName="LocalStore_Id" IsNull="false" />
+      <Condition ColumnName="Country_Id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="CityReview" TypeName="EntityModel.CityReview" StoreEntitySet="Reviews">
       <EndProperty Name="City">
@@ -758,12 +977,12 @@
     </AssociationSetMapping>
     <AssociationSetMapping Name="CountryReview" TypeName="EntityModel.CountryReview" StoreEntitySet="Reviews">
       <EndProperty Name="Country">
-        <ScalarProperty Name="Id" ColumnName="Country_Id" />
+        <ScalarProperty Name="Id" ColumnName="Location_Id" />
       </EndProperty>
       <EndProperty Name="Review">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
-      <Condition ColumnName="Country_Id" IsNull="false" />
+      <Condition ColumnName="Location_Id" IsNull="false" />
     </AssociationSetMapping>
     <AssociationSetMapping Name="CategoryCategory" TypeName="EntityModel.CategoryCategory" StoreEntitySet="Categories">
       <EndProperty Name="Category">
@@ -782,6 +1001,56 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
       <Condition ColumnName="Category_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="LoginUser" TypeName="EntityModel.LoginUser" StoreEntitySet="Users">
+      <EndProperty Name="Login">
+        <ScalarProperty Name="Id" ColumnName="Login_Id" />
+      </EndProperty>
+      <EndProperty Name="User">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BusinessAddress" TypeName="EntityModel.BusinessAddress" StoreEntitySet="Addresses">
+      <EndProperty Name="Business">
+        <ScalarProperty Name="Id" ColumnName="Business_Id" />
+      </EndProperty>
+      <EndProperty Name="Address">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="Business_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BusinessTag" TypeName="EntityModel.BusinessTag" StoreEntitySet="Tags">
+      <EndProperty Name="Business">
+        <ScalarProperty Name="Id" ColumnName="Business_Id" />
+      </EndProperty>
+      <EndProperty Name="Tag">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="Business_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BusinessReview" TypeName="EntityModel.BusinessReview" StoreEntitySet="Reviews">
+      <EndProperty Name="Business">
+        <ScalarProperty Name="Id" ColumnName="Business_Id" />
+      </EndProperty>
+      <EndProperty Name="Review">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BusinessOwner" TypeName="EntityModel.BusinessOwner" StoreEntitySet="BusinessOwner">
+      <EndProperty Name="Business">
+        <ScalarProperty Name="Id" ColumnName="Business_Id" />
+      </EndProperty>
+      <EndProperty Name="Owner">
+        <ScalarProperty Name="Id" ColumnName="Owners_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ReviewTag" TypeName="EntityModel.ReviewTag" StoreEntitySet="Tags">
+      <EndProperty Name="Review">
+        <ScalarProperty Name="Id" ColumnName="Review_Id" />
+      </EndProperty>
+      <EndProperty Name="Tag">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>

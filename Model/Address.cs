@@ -14,12 +14,6 @@ namespace Model
     
     public partial class Address
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Address()
-        {
-            this.LocalStores = new HashSet<LocalStore>();
-        }
-    
         public System.Guid Id { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -28,8 +22,7 @@ namespace Model
         public string FaxNo { get; set; }
         public System.Data.Entity.Spatial.DbGeography Location { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocalStore> LocalStores { get; set; }
         public virtual City City { get; set; }
+        public virtual Business Business { get; set; }
     }
 }

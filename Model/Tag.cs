@@ -16,8 +16,10 @@ namespace Model
     {
         public System.Guid Id { get; set; }
         public string TagName { get; set; }
+        public bool Searchable { get; set; }
     
-        public virtual LocalStore LocalStore { get; set; }
         public virtual Category Category { get; set; }
+        public virtual Business Business { get; set; }
+        public virtual Review Review { get; set; }
     }
 }

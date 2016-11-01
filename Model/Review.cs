@@ -21,11 +21,15 @@ namespace Model
         public string SubmitLatitude { get; set; }
         public string SubmitLongitude { get; set; }
         public string IsConfirm { get; set; }
+        public short Type { get; set; }
+        public bool IsAnonymous { get; set; }
+        public bool ToBlackList { get; set; }
     
         public virtual ScoreBand ScoreBand { get; set; }
         public virtual Reviewer Reviewer { get; set; }
-        public virtual LocalStore LocalStore { get; set; }
         public virtual City City { get; set; }
-        public virtual Country Country { get; set; }
+        public virtual Country Location { get; set; }
+        public virtual Business Business { get; set; }
+        public virtual Tag Tags { get; set; }
     }
 }

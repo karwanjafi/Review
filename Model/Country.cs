@@ -25,6 +25,7 @@ namespace Model
         public int Id { get; set; }
         public string Name { get; set; }
         public short Status { get; set; }
+        public string Code { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<City> Cities { get; set; }

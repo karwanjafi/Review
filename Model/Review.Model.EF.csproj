@@ -54,13 +54,18 @@
     <Compile Include="Address.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Admin.cs">
+      <DependentUpon>EntityModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Business.cs">
+      <DependentUpon>EntityModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Category.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
     <Compile Include="City.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Class1.cs" />
     <Compile Include="Country.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
@@ -79,7 +84,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="LocalStore.cs">
+    <Compile Include="Login.cs">
+      <DependentUpon>EntityModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Owner.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

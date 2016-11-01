@@ -27,12 +27,13 @@ namespace Model
     
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<LocalStore> LocalStores { get; set; }
+        public virtual DbSet<Business> Businesses { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<ScoreBand> ScoreBands { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Login> Logins { get; set; }
     }
 }

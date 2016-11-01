@@ -1,13 +1,20 @@
-﻿using Microsoft.Owin;
-using Owin;
+﻿using Owin;
 
-[assembly: OwinStartupAttribute(typeof(Review.Startup))]
-namespace Review
+namespace IdentitySample
 {
     public partial class Startup
     {
+        public void CreateDatabse()
+        {
+
+        }
+
         public void Configuration(IAppBuilder app)
         {
+#if DEBUG
+            using (var context = new Review.Model.CodeFirst.Models.ReviewModel())
+                context.Database.CreateIfNotExists();
+#endif
             ConfigureAuth(app);
         }
     }

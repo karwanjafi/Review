@@ -12,12 +12,13 @@ namespace Model
     using System;
     using System.Collections.Generic;
     
-    public partial class LocalStore
+    public partial class Business
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public LocalStore()
+        public Business()
         {
             this.Reviews = new HashSet<Review>();
+            this.Owners = new HashSet<Owner>();
         }
     
         public System.Guid Id { get; set; }
@@ -28,9 +29,11 @@ namespace Model
         public short AverageScore { get; set; }
         public Nullable<System.DateTime> LastCalculationDateTime { get; set; }
     
-        public virtual Address Address { get; set; }
+        public virtual Address Addresses { get; set; }
+        public virtual Tag Tags { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Review> Reviews { get; set; }
-        public virtual Tag Tag { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Owner> Owners { get; set; }
     }
 }

@@ -22,6 +22,11 @@ namespace Model
     
         public byte RegisterationSource { get; set; }
         public Nullable<System.DateTime> LastCommentDateTime { get; set; }
+        public short Gender { get; set; }
+        public string Bio { get; set; }
+        public string BirthDay { get; set; }
+        public string Interest { get; set; }
+        public short EducationDegree { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Review> Reviews { get; set; }

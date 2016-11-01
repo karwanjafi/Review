@@ -30,5 +30,8 @@ namespace Model
         public byte ActivationType { get; set; }
         public Nullable<System.DateTime> ActivationDateTime { get; set; }
         public short Status { get; set; }
+        public string Salt { get; set; }
+    
+        public virtual Login Login { get; set; }
     }
 }
