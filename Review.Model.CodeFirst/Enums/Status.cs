@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 namespace Review.Model.Enums
 {
     [Flags]
-    public enum PriceRate
+    public enum Status
     {
-        VeryCheap = 1,
-        Cheap = 2,
-        Normal = 3,
-        Expensive = 4,
-        VeryExpensive = 5,
-        Luxary = 6,
+        Active = 1,
+        Hold = 2,
+        Blocked = 3,
+        NotActived = 4,
+        DeActive = 5,
+        Expired = 6,
+
+
     }
 }

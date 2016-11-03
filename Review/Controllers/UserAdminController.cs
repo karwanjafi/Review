@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Review.Model.CodeFirst.Models;
+using Review.Model;
 
 namespace IdentitySample.Controllers
 {

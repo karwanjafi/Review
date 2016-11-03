@@ -1,4 +1,4 @@
-﻿namespace Review.Model.CodeFirst.Enums
+﻿namespace Review.Model.Enums
 {
     using System;
     using System.Collections.Generic;

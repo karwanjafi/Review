@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model
 {
     using System;
     using System.Collections.Generic;
@@ -19,12 +19,15 @@ namespace Review.Model.CodeFirst.Models
 
         public Guid? Business_Id { get; set; }
 
-        public Guid Review_Id { get; set; }
+        public Guid? Review_Id { get; set; }
+        public Guid? Address_Id { get; set; }
 
         public virtual Business Business { get; set; }
 
         public virtual Category Category { get; set; }
 
         public virtual Review Review { get; set; }
+
+        public virtual Address Address { get; set; }
     }
 }

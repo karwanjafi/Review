@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model
 {
     using System;
     using System.Collections.Generic;
@@ -8,58 +8,49 @@ namespace Review.Model.CodeFirst.Models
 
     public partial class Review
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Review()
-        {
-            Tags = new HashSet<Tag>();
-        }
-
+        [Key]
         public Guid Id { get; set; }
 
         [Required]
+        [StringLength(500)]
         public string Comment { get; set; }
 
         [Required]
-        public string SubmitDateTime { get; set; }
+        public DateTime SubmitDateTime { get; set; }
 
         [Required]
+        [StringLength(15)]
         public string SubmitIP { get; set; }
 
-        [Required]
-        public string SubmitLatitude { get; set; }
+        public decimal? SubmitLatitude { get; set; }
+
+        public decimal? SubmitLongitude { get; set; }
 
         [Required]
-        public string SubmitLongitude { get; set; }
-
-        [Required]
-        public string IsConfirm { get; set; }
+        public bool IsConfirm { get; set; }
 
         public short Type { get; set; }
 
+        [Required]
         public bool IsAnonymous { get; set; }
 
+        [Required]
         public bool ToBlackList { get; set; }
 
-        public short ScoreBand_Id { get; set; }
-
+        [Required]
         public Guid Reviewer_Id { get; set; }
-
-        public int? City_Id { get; set; }
 
         public int? Location_Id { get; set; }
 
         public Guid Business_Id { get; set; }
+        public Guid Tag_Id { get; set; }
+        public short ScoreBand_Id { get; set; }
 
         public virtual Business Business { get; set; }
 
-        public virtual City City { get; set; }
+        public virtual Reviewer Reviewer { get; set; }
 
-        public virtual Country Country { get; set; }
-
-        public virtual Users_Reviewer Users_Reviewer { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual Tag Tag { get; set; }
 
         public virtual ScoreBand ScoreBand { get; set; }
     }

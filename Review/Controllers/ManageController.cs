@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Review.Model;
 using Review.Model.CodeFirst.Models;
 using System.Linq;
 using System.Threading.Tasks;

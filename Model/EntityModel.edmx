@@ -15,7 +15,6 @@
     <EntitySet Name="Addresses" EntityType="EntityModel.Store.Addresses" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Cities" EntityType="EntityModel.Store.Cities" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Categories" EntityType="EntityModel.Store.Categories" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Logins" EntityType="EntityModel.Store.Logins" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Users_Reviewer" EntityType="EntityModel.Store.Users_Reviewer" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Users_Owner" EntityType="EntityModel.Store.Users_Owner" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Users_Admin" EntityType="EntityModel.Store.Users_Admin" store:Type="Tables" Schema="dbo" />
@@ -55,10 +54,6 @@
     <AssociationSet Name="CategoryTag" Association="EntityModel.Store.CategoryTag">
       <End Role="Category" EntitySet="Categories" />
       <End Role="Tag" EntitySet="Tags" />
-    </AssociationSet>
-    <AssociationSet Name="LoginUser" Association="EntityModel.Store.LoginUser">
-      <End Role="Login" EntitySet="Logins" />
-      <End Role="User" EntitySet="Users" />
     </AssociationSet>
     <AssociationSet Name="BusinessAddress" Association="EntityModel.Store.BusinessAddress">
       <End Role="Business" EntitySet="Businesses" />
@@ -112,7 +107,6 @@
     <Property Name="ActivationDateTime" Type="datetime" Nullable="true" />
     <Property Name="Status" Type="smallint" Nullable="false" />
     <Property Name="Salt" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Login_Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="Tags">
     <Key>
@@ -209,16 +203,6 @@
     <Property Name="Bio" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Logo" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Parent_Id" Type="int" Nullable="true" />
-  </EntityType>
-  <EntityType Name="Logins">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="LoginDateTime" Type="datetime" Nullable="false" />
-    <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="TokenIp" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="LoginDevice" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="Users_Reviewer">
     <Key>
@@ -359,18 +343,6 @@
       </Principal>
       <Dependent Role="Tag">
         <PropertyRef Name="Category_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="LoginUser">
-    <End Role="Login" Type="EntityModel.Store.Logins" Multiplicity="1" />
-    <End Role="User" Type="EntityModel.Store.Users" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Login">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="User">
-        <PropertyRef Name="Login_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -538,11 +510,6 @@
             <End Role="Category" EntitySet="Categories" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
-          <EntitySet Name="Logins" EntityType="EntityModel.Login" />
-          <AssociationSet Name="LoginUser" Association="EntityModel.LoginUser">
-            <End Role="Login" EntitySet="Logins" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="BusinessAddress" Association="EntityModel.BusinessAddress">
             <End Role="Business" EntitySet="Businesses" />
             <End Role="Address" EntitySet="Addresses" />
@@ -578,7 +545,6 @@
           <Property Name="ActivationType" Type="Byte" Nullable="false" />
           <Property Name="ActivationDateTime" Type="DateTime" Nullable="true" />
           <Property Name="Status" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="Login" Relationship="EntityModel.LoginUser" FromRole="User" ToRole="Login" />
           <Property Name="Salt" Type="String" Nullable="false" />
           </EntityType>
         <EntityType Name="Reviewer" BaseType="EntityModel.User">
@@ -742,21 +708,6 @@
         <EntityType Name="Owner" BaseType="EntityModel.User">
           <NavigationProperty Name="Business" Relationship="EntityModel.BusinessOwner" FromRole="Owner" ToRole="Business" />
         </EntityType>
-        <EntityType Name="Login">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <NavigationProperty Name="Users" Relationship="EntityModel.LoginUser" FromRole="Login" ToRole="User" />
-          <Property Name="LoginDateTime" Type="DateTime" Nullable="false" />
-          <Property Name="Token" Type="String" Nullable="false" />
-          <Property Name="TokenIp" Type="String" Nullable="false" />
-          <Property Name="LoginDevice" Type="String" Nullable="false" />
-          <Property Name="Id" Type="Guid" Nullable="false" />
-        </EntityType>
-        <Association Name="LoginUser">
-          <End Type="EntityModel.Login" Role="Login" Multiplicity="1" />
-          <End Type="EntityModel.User" Role="User" Multiplicity="*" />
-        </Association>
         <Association Name="BusinessAddress">
           <End Type="EntityModel.Business" Role="Business" Multiplicity="0..1" />
           <End Type="EntityModel.Address" Role="Address" Multiplicity="0..1" />
@@ -914,17 +865,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Logins">
-      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Login)">
-        <MappingFragment StoreEntitySet="Logins">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="LoginDateTime" ColumnName="LoginDateTime" />
-          <ScalarProperty Name="Token" ColumnName="Token" />
-          <ScalarProperty Name="TokenIp" ColumnName="TokenIp" />
-          <ScalarProperty Name="LoginDevice" ColumnName="LoginDevice" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <AssociationSetMapping Name="ScoreBandReview" TypeName="EntityModel.ScoreBandReview" StoreEntitySet="Reviews">
       <EndProperty Name="ScoreBand">
         <ScalarProperty Name="Id" ColumnName="ScoreBand_Id" />
@@ -1001,14 +941,6 @@
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
       <Condition ColumnName="Category_Id" IsNull="false" />
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="LoginUser" TypeName="EntityModel.LoginUser" StoreEntitySet="Users">
-      <EndProperty Name="Login">
-        <ScalarProperty Name="Id" ColumnName="Login_Id" />
-      </EndProperty>
-      <EndProperty Name="User">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="BusinessAddress" TypeName="EntityModel.BusinessAddress" StoreEntitySet="Addresses">
       <EndProperty Name="Business">

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using Review.Model.CodeFirst.Models;
+using Review.Model;
 
 namespace IdentitySample.Controllers
 {

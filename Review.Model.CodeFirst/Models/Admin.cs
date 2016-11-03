@@ -5,10 +5,15 @@ namespace Review.Model
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
-    using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class UserClaim : IdentityUserClaim<string>
+    public partial class Admin
     {
+        [Required]
+        public string Id { get; set; }
 
+        [Required]
+        public string User_Id { get; set; }
+
+        public virtual User User { get; set; }
     }
 }

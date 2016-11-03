@@ -84,9 +84,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Login.cs">
-      <DependentUpon>EntityModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Owner.cs">
       <DependentUpon>EntityModel.tt</DependentUpon>
     </Compile>

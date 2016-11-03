@@ -34,6 +34,5 @@ namespace Model
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<Login> Logins { get; set; }
     }
 }

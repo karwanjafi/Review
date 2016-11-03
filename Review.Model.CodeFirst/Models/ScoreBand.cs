@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model 
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,6 @@ namespace Review.Model.CodeFirst.Models
 
     public partial class ScoreBand
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ScoreBand()
         {
             Reviews = new HashSet<Review>();
@@ -25,7 +24,6 @@ namespace Review.Model.CodeFirst.Models
         [Required]
         public string Score { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }

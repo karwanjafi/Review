@@ -6,7 +6,7 @@ using IdentitySample.Models;
 using Owin;
 using System;
 using Review.Model.CodeFirst.Models;
-using Review.Models;
+using Review.Model;
 
 namespace IdentitySample
 {
@@ -16,7 +16,7 @@ namespace IdentitySample
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, user manager and role manager to use a single instance per request
-            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext(ReviewDataContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);

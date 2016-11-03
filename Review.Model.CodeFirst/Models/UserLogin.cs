@@ -7,8 +7,10 @@ namespace Review.Model
     using System.Data.Entity.Spatial;
     using Microsoft.AspNet.Identity.EntityFramework;
 
-    public partial class UserClaim : IdentityUserClaim<string>
+    public partial class UserLogin : IdentityUserLogin<string>
     {
+        [Key]
+        public int Id { get; set; }
 
     }
 }

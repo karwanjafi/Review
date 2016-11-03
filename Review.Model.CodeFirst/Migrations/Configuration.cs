@@ -5,7 +5,7 @@ namespace Review.Model.CodeFirst.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Review.Model.CodeFirst.Models.ReviewModel>
+    internal sealed class Configuration : DbMigrationsConfiguration<ReviewDataContext>
     {
         public Configuration()
         {
@@ -13,7 +13,7 @@ namespace Review.Model.CodeFirst.Migrations
             ContextKey = "MyDbContext";
         }
 
-        protected override void Seed(Review.Model.CodeFirst.Models.ReviewModel context)
+        protected override void Seed(ReviewDataContext context)
         {
             //  This method will be called after migrating to the latest version.
 

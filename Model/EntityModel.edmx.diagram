@@ -29,8 +29,6 @@
         <EntityTypeShape EntityType="EntityModel.Owner" Width="1.5" PointX="9.375" PointY="11.875" />
         <InheritanceConnector EntityType="EntityModel.Owner" />
         <InheritanceConnector EntityType="EntityModel.Admin" />
-        <EntityTypeShape EntityType="EntityModel.Login" Width="1.5" PointX="4.125" PointY="2.125" />
-        <AssociationConnector Association="EntityModel.LoginUser" />
         <AssociationConnector Association="EntityModel.BusinessAddress" />
         <AssociationConnector Association="EntityModel.BusinessTag" />
         <AssociationConnector Association="EntityModel.BusinessReview" />

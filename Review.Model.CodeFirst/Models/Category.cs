@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model
 {
     using System;
     using System.Collections.Generic;
@@ -6,12 +6,12 @@ namespace Review.Model.CodeFirst.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+    [Table("Categories")]
     public partial class Category
     {
         public Category()
         {
-            Categories1 = new HashSet<Category>();
-            Tags = new HashSet<Tag>();
+            Children = new HashSet<Category>();
         }
 
         public int Id { get; set; }
@@ -28,13 +28,13 @@ namespace Review.Model.CodeFirst.Models
         public string Logo { get; set; }
 
         public int? Parent_Id { get; set; }
+        public virtual Category Parent { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Category> Categories1 { get; set; }
+        [Required]
+        public Guid Tag_Id { get; set; }
+        public virtual Tag Tag { get; set; }
 
-        public virtual Category Category1 { get; set; }
+        public virtual ICollection<Category> Children { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tag> Tags { get; set; }
     }
 }

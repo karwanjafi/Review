@@ -11,10 +11,6 @@ namespace IdentitySample
 
         public void Configuration(IAppBuilder app)
         {
-#if DEBUG
-            using (var context = new Review.Model.CodeFirst.Models.ReviewModel())
-                context.Database.CreateIfNotExists();
-#endif
             ConfigureAuth(app);
         }
     }

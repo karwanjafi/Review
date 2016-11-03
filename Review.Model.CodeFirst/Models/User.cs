@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model
 {
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
@@ -10,14 +10,9 @@ namespace Review.Model.CodeFirst.Models
     using System.Security.Claims;
     using System.Threading.Tasks;
 
-    //IdentityUser<Guid, UserLoginHistory, UserRoleManager, UserClaim>,
-    public partial class User : IdentityUser, IUser<string>
+    [Table("Users")]
+    public partial class User  : IdentityUser<string, UserLogin, UserRole, UserClaim>
     {
-        public User()
-        {
-            LoginHistory = new HashSet<UserLoginHistory>();
-        }
-
         [StringLength(100)]
         public string Name { get; set; }
 
@@ -28,34 +23,17 @@ namespace Review.Model.CodeFirst.Models
 
         public bool IsActivate { get; set; }
 
-        public byte ActivationType { get; set; }
-
         public DateTime? ActivationDateTime { get; set; }
 
         public short Status { get; set; }
+  
+        public virtual Admin Admin { get; set; }
 
-        [Required]
-        public string Salt { get; set; }
+        public virtual Owner Owner { get; set; }
 
-        public Guid Login_Id { get; set; }
+        public virtual Reviewer Reviewer { get; set; }
 
-        public virtual ICollection<UserLoginHistory> LoginHistory { get; set; }
-
-        public virtual Users_Admin Users_Admin { get; set; }
-
-        public virtual Users_Owner Users_Owner { get; set; }
-
-        public virtual Users_Reviewer Users_Reviewer { get; set; }
-
-        string IUser<string>.Id
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, string> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);

@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model 
 {
     using System;
     using System.Collections.Generic;
@@ -6,17 +6,21 @@ namespace Review.Model.CodeFirst.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+    [Table("Countries")]
     public partial class Country
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Country()
         {
             Cities = new HashSet<City>();
-            Reviews = new HashSet<Review>();
-            Users_Reviewer = new HashSet<Users_Reviewer>();
+            Useres = new HashSet<User>();
+            Businesses = new HashSet<Business>();
         }
 
+        [Key]
         public int Id { get; set; }
+
+        [StringLength(5)]
+        public string Code { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -24,17 +28,11 @@ namespace Review.Model.CodeFirst.Models
 
         public short Status { get; set; }
 
-        [Required]
-        [StringLength(5)]
-        public string Code { get; set; }
+     
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<City> Cities { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Review> Reviews { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Users_Reviewer> Users_Reviewer { get; set; }
+        public virtual ICollection<User> Useres { get; set; }
+        public virtual ICollection<Business> Businesses { get; set; }
     }
 }

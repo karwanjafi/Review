@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/01/2016 19:32:13
+-- Date Created: 11/03/2016 20:45:25
 -- Generated from EDMX file: C:\WorkSpace\Review\Web\Review\Model\EntityModel.edmx
 -- --------------------------------------------------
 
@@ -43,9 +43,6 @@ IF OBJECT_ID(N'[dbo].[FK_CategoryCategory]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_CategoryTag]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_CategoryTag];
-GO
-IF OBJECT_ID(N'[dbo].[FK_LoginUser]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Users] DROP CONSTRAINT [FK_LoginUser];
 GO
 IF OBJECT_ID(N'[dbo].[FK_BusinessAddress]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_BusinessAddress];
@@ -106,9 +103,6 @@ GO
 IF OBJECT_ID(N'[dbo].[Categories]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Categories];
 GO
-IF OBJECT_ID(N'[dbo].[Logins]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Logins];
-GO
 IF OBJECT_ID(N'[dbo].[Users_Reviewer]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Users_Reviewer];
 GO
@@ -138,8 +132,7 @@ CREATE TABLE [dbo].[Users] (
     [ActivationType] tinyint  NOT NULL,
     [ActivationDateTime] datetime  NULL,
     [Status] smallint  NOT NULL,
-    [Salt] nvarchar(max)  NOT NULL,
-    [Login_Id] uniqueidentifier  NOT NULL
+    [Salt] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -239,16 +232,6 @@ CREATE TABLE [dbo].[Categories] (
 );
 GO
 
--- Creating table 'Logins'
-CREATE TABLE [dbo].[Logins] (
-    [LoginDateTime] datetime  NOT NULL,
-    [Token] nvarchar(max)  NOT NULL,
-    [TokenIp] nvarchar(max)  NOT NULL,
-    [LoginDevice] nvarchar(max)  NOT NULL,
-    [Id] uniqueidentifier  NOT NULL
-);
-GO
-
 -- Creating table 'Users_Reviewer'
 CREATE TABLE [dbo].[Users_Reviewer] (
     [RegisterationSource] tinyint  NOT NULL,
@@ -337,12 +320,6 @@ GO
 -- Creating primary key on [Id] in table 'Categories'
 ALTER TABLE [dbo].[Categories]
 ADD CONSTRAINT [PK_Categories]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'Logins'
-ALTER TABLE [dbo].[Logins]
-ADD CONSTRAINT [PK_Logins]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -507,21 +484,6 @@ GO
 CREATE INDEX [IX_FK_CategoryTag]
 ON [dbo].[Tags]
     ([Category_Id]);
-GO
-
--- Creating foreign key on [Login_Id] in table 'Users'
-ALTER TABLE [dbo].[Users]
-ADD CONSTRAINT [FK_LoginUser]
-    FOREIGN KEY ([Login_Id])
-    REFERENCES [dbo].[Logins]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_LoginUser'
-CREATE INDEX [IX_FK_LoginUser]
-ON [dbo].[Users]
-    ([Login_Id]);
 GO
 
 -- Creating foreign key on [Business_Id] in table 'Addresses'

@@ -1,4 +1,4 @@
-namespace Review.Model.CodeFirst.Models
+namespace Review.Model
 {
     using System;
     using System.Collections.Generic;
@@ -6,16 +6,15 @@ namespace Review.Model.CodeFirst.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Users_Reviewer
+    public partial class Reviewer
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Users_Reviewer()
+        public Reviewer()
         {
             Reviews = new HashSet<Review>();
         }
 
-        public Guid Id { get; set; }
-
+        [Required]
+        public string Id { get; set; }
         public byte RegisterationSource { get; set; }
 
         public DateTime? LastCommentDateTime { get; set; }
@@ -34,13 +33,15 @@ namespace Review.Model.CodeFirst.Models
         public short EducationDegree { get; set; }
 
 
+
         public int? Country_Id { get; set; }
 
         public virtual Country Country { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Review> Reviews { get; set; }
 
+        [Required]
+        public string User_Id { get; set; }
         public virtual User User { get; set; }
     }
 }
